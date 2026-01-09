@@ -1,22 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Fanzine Maxime Margot | Lancer de téléphone</title>
-	<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Lancer de téléphone — Nokia 3310</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<section>
-		<h1>Lancer de téléphone</h1>
-	</section>
-	<section>
-		<div class="image">
 
-		</div>
-		<div class="texte">
-			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam, aliquam voluptates. Temporibus necessitatibus cum minima quam ipsa alias fugit facere accusantium perferendis voluptates? Explicabo voluptatum aut accusamus magnam provident et!</p>
-		</div>
-	</section>
+  <!-- BOUTON DARK MODE -->
+  <div class="theme-switch-wrapper">
+    <input type="checkbox" id="checkbox" class="theme-switch">
+    <label for="checkbox" class="pixel-slider"></label>
+    <em>Enable Dark Mode!</em>
+  </div>
+
+  <!-- HEADER -->
+  <header class="intro">
+    <h1>Lancer de téléphone</h1>
+    <p class="subtitle">
+      Quand la technologie est faite pour voler<br>
+      <span>Focus : Nokia 3310</span>
+    </p>
+    <div class="image-placeholder">
+      <img src="img/x1080.jpeg" alt="">
+    </div>
+  </header>
+
+  <!-- SECTION SPORT -->
+  <section>
+    <h2>Une discipline spéciale</h2>
+    <p>Le lancer de téléphone portable est un sport d'origine finlandaise consistant à lancer le plus loin possible un téléphone portable.</p>
+    <p>Le record du monde a été établi en août 2012 par Ere Karjalainen avec un lancer de 101,46 mètres.</p>
+    <p>Record officiel reconnu : Mikko Lampi, 94,97 m.</p>
+    <h3>Règles</h3>
+    <p>Les sportifs lancent leur téléphone dans une aire définie. Chaque modèle est autorisé, pas de réutilisation du même téléphone pendant les séries.</p>
+    <div class="image-placeholder">
+      <img src="img/ill_1747580_a4a5_000_par330515.jpg-2.jpg" alt="">
+    </div>
+  </section>
+
+  <!-- POURQUOI LE 3310 -->
+  <section class="split">
+    <div>
+      <h2>Pourquoi le Nokia 3310 ?</h2>
+      <ul>
+        <li>Coque épaisse</li>
+        <li>Batterie amovible</li>
+        <li>Aucun écran tactile</li>
+        <li>Poids équilibré</li>
+        <li>Autonomie légendaire</li>
+      </ul>
+    </div>
+    <div class="image-placeholder">
+      <img src="img/2016-05-09-21_26_55-nokia-3310-unboxing-youtube.png" alt="">
+    </div>
+  </section>
+
+  <!-- ANATOMIE -->
+  <section>
+    <h2>Anatomie d’un projectile</h2>
+    <p>Lors de l’impact, le téléphone se démonte. Chaque pièce absorbe une partie du choc.</p>
+    <div class="image-placeholder">
+      <img src="img/disassembled-nokia-3310-released-in-2000-showing-various-v0-akeqkgoh19df1.jpeg.webp" alt="">
+    </div>
+  </section>
+
+  <!-- FICHE TECHNIQUE -->
+  <section>
+    <h2>Fiche technique</h2>
+    <div class="tech-card">
+      <p><strong>Nom :</strong> Nokia 3310</p>
+      <p><strong>Année :</strong> 2000</p>
+      <p><strong>Poids :</strong> Suffisant</p>
+      <p><strong>Résistance :</strong> Élevée</p>
+      <p><strong>Autonomie :</strong> Infinie</p>
+      <p><strong>Aptitude au lancer :</strong> Excellente</p>
+    </div>
+  </section>
+
+  <!-- SNAKE -->
+  <section class="snake-section">
+    <h2>Snake — Le classique</h2>
+    <p>Attrape les pixels verts et évite de te mordre la queue !</p>
+    <canvas id="snakeCanvas" width="400" height="400"></canvas>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p class="signature">Fanzine web — Maxime — 2026</p>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
