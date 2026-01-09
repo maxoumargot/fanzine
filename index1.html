@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>LCD 84x48 + Snake</title>
+<style>
+body {
+  margin: 0;
+  background: #111;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* LCD écran */
+#lcd {
+  display: grid;
+  grid-template-columns: repeat(84, 6px);
+  grid-template-rows: repeat(48, 6px);
+  background: #b7cf9b;
+}
+
+.pixel {
+  width: 6px;
+  height: 6px;
+  background: #b7cf9b;
+}
+
+.pixel.on {
+  background: #0e2a14;
+}
+</style>
+</head>
+<body>
+
+<div id="lcd"></div>
+
+<script>
+/* ===== CONSTANTES ===== */
+const WIDTH = 84;
+const HEIGHT = 48;
+const SIZE = WIDTH * HEIGHT;
+
+/* ===== FRAMEBUFFER ===== */
+const lcd = document.getElementById("lcd");
+const pixels = new Array(SIZE);
+const buffer = new Array(SIZE).fill(0);
+
+for (let i = 0; i < SIZE; i++) {
+  const p = document.createElement("div");
+  p.className = "pixel";
+  lcd.appendChild(p);
+  pixels[i] = p;
+}
+
+/* ===== POLICE 5x7 pour texte ===== */
+const FONT = {
+"A":[14,17,17,31,17,17,17],
+"B":[30,17,30,17,17,17,30],
+"C":[14,17,16,16,16,17,14],
+"D":[30,17,17,17,17,17,30],
+"E":[31,16,30,16,16,16,31],
+"F":[31,16,30,16,16,16,16],
+"G":[14,17,16,23,17,17,14],
+"H":[17,17,31,17,17,17,17],
+"I":[31,4,4,4,4,4,31],
+"J":[7,2,2,2,2,18,12],
+"K":[17,18,20,24,20,18,17],
+"L":[16,16,16,16,16,16,31],
+"M":[17,27,21,21,17,17,17],
+"N":[17,25,21,19,17,17,17],
+"O":[14,17,17,17,17,17,14],
+"P":[30,17,17,30,16,16,16],
+"Q":[14,17,17,17,21,18,13],
+"R":[30,17,17,30,20,18,17],
+"S":[15,16,14,1,1,17,14],
+"T":[31,4,4,4,4,4,4],
+"U":[17,17,17,17,17,17,14],
+"V":[17,17,17,17,17,10,4],
+"W":[17,17,17,21,21,27,17],
+"X":[17,17,10,4,10,17,17],
+"Y":[17,17,10,4,4,4,4],
+"Z":[31,1,2,4,8,16,31],
+"0":[14,17,19,21,25,17,14],
+"1":[4,12,4,4,4,4,14],
+"2":[14,17,1,2,4,8,31],
+"3":[31,1,6,1,1,17,14],
+"4":[2,6,10,18,31,2,2],
+"5":[31,16,30,1,1,17,14],
+"6":[6,8,16,30,17,17,14],
+"7":[31,1,2,4,8,8,8],
+"8":[14,17,17,14,17,17,14],
+"9":[14,17,17,15,1,2,12],
+" ":[0,0,0,0,0,0,0]
+};
+
+/* ===== LCD FUNCTIONS ===== */
+function clearScreen() {
+  buffer.fill(0);
+}
+
+function drawChar(x, y, c) {
+  const g = FONT[c];
+  if (!g) return;
+  for (let r=0; r<7; r++){
+    for(let col=0; col<5; col++){
+      if ((g[r]>>(4-col)) & 1){
+        const px = x + col;
+        const py = y + r;
+        if(px>=0 && px<WIDTH && py>=0 && py<HEIGHT){
+          buffer[py*WIDTH+px]=1;
+        }
+      }
+    }
+  }
+}
+
+function drawText(x, y, text){
+  let cx = x;
+  text = text.toUpperCase();
+  for(let i=0;i<text.length;i++){
+    drawChar(cx, y, text[i]);
+    cx += 6;
+  }
+}
+
+function render(){
+  for(let i=0;i<SIZE;i++){
+    pixels[i].classList.toggle("on", buffer[i]===1);
+  }
+}
+
+/* ===== INTERFACE MENU ===== */
+let menuItems=["Snake","SMS","Contacts"];
+let selected=0;
+let inGame=false;
+
+function drawMenu(){
+  clearScreen();
+  for(let i=0;i<menuItems.length;i++){
+    if(i===selected){
+      drawText(2,i*8,">"+menuItems[i]);
+    } else {
+      drawText(4,i*8,menuItems[i]);
+    }
+  }
+  render();
+}
+
+/* ===== SNAKE ===== */
+let snake=[], dir={x:1,y:0}, apple={x:0,y:0}, gameInterval;
+
+function startSnake(){
+  clearScreen();
+  snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}];
+  dir={x:1,y:0};
+  spawnApple();
+  inGame=true;
+  if(gameInterval) clearInterval(gameInterval);
+  gameInterval=setInterval(updateSnake,100);
+}
+
+function spawnApple(){
+  apple.x=Math.floor(Math.random()*WIDTH);
+  apple.y=Math.floor(Math.random()*HEIGHT);
+}
+
+function updateSnake(){
+  clearScreen();
+  let head={x:snake[0].x+dir.x, y:snake[0].y+dir.y};
+  // collisions
+  if(head.x<0||head.x>=WIDTH||head.y<0||head.y>=HEIGHT||snake.some(s=>s.x===head.x && s.y===head.y)){
+    inGame=false;
+    clearInterval(gameInterval);
+    drawText(10,20,"GAME OVER");
+    render();
+    return;
+  }
+  snake.unshift(head);
+  // apple
+  if(head.x===apple.x && head.y===apple.y){
+    spawnApple();
+  } else {
+    snake.pop();
+  }
+  // draw apple
+  buffer[apple.y*WIDTH+apple.x]=1;
+  // draw snake
+  snake.forEach(s=>buffer[s.y*WIDTH+s.x]=1);
+  render();
+}
+
+/* ===== NAVIGATION ===== */
+document.addEventListener("keydown",(e)=>{
+  if(inGame){
+    if(e.key==="ArrowUp" && dir.y!==1) dir={x:0,y:-1};
+    if(e.key==="ArrowDown" && dir.y!==-1) dir={x:0,y:1};
+    if(e.key==="ArrowLeft" && dir.x!==1) dir={x:-1,y:0};
+    if(e.key==="ArrowRight" && dir.x!==-1) dir={x:1,y:0};
+  } else {
+    if(e.key==="ArrowDown") selected=(selected+1)%menuItems.length;
+    if(e.key==="ArrowUp") selected=(selected-1+menuItems.length)%menuItems.length;
+    if(e.key==="Enter"){
+      if(menuItems[selected]==="Snake") startSnake();
+    }
+    drawMenu();
+  }
+});
+
+/* ===== INITIAL DRAW ===== */
+drawMenu();
+</script>
+
+</body>
+</html>
